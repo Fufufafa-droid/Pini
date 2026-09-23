@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M. Keyza Pratama | Gamer & Urban Gardener</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        nature: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        gamer: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                    boxShadow: {
+                        '3d-card': '0 20px 40px -15px rgba(22, 163, 74, 0.15), 0 0 15px rgba(0,0,0,0.05)',
+                        '3d-hover': '0 30px 60px -12px rgba(22, 163, 74, 0.25), 0 10px 20px -5px rgba(0,0,0,0.1)',
+                        'glow': '0 0 25px rgba(34, 197, 94, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0b140e;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Ambient 3D Nature Background Glows */
+        .bg-glow-1 {
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+        .bg-glow-2 {
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        /* Glassmorphism 3D Styling */
+        .glass-card {
+            background: rgba(18, 32, 23, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(74, 222, 128, 0.18);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-nav {
+            background: rgba(11, 20, 14, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(74, 222, 128, 0.15);
+        }
+
+        /* 3D Tilt Card Container */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+
+        /* Floating Leaves Animation Background */
+        .leaf-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatLeaf 12s infinite ease-in-out;
+            opacity: 0.3;
+        }
+
+        @keyframes floatLeaf {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.4;
+            }
+            80% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b140e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #16a34a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #22c55e;
+        }
+
+        /* Slider Custom Styling */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #22c55e;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
+            border: 2px solid #ffffff;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative selection:bg-nature-500 selection:text-white">
+
+    <div id="particles-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- Background Ambient Light Orbs -->
+    <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-glow-1 pointer-events-none z-0"></div>
+    <div class="fixed bottom-10 right-10 w-[500px] h-[500px] bg-glow-2 pointer-events-none z-0"></div>
+
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav py-4 px-6 md:px-12 transition-all">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-nature-700 via-nature-500 to-emerald-300 flex items-center justify-center text-white shadow-lg shadow-nature-600/30 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-seedling text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-lg text-white tracking-wide block">KEYZA PRATAMA</span>
+                    <span class="text-xs text-nature-400 font-medium tracking-wider uppercase block -mt-1">Gamer & Gardener</span>
+                </div>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#about" class="hover:text-nature-400 transition-colors">Tentang Saya</a>
+                <a href="#synergy" class="hover:text-nature-400 transition-colors">Sinergi Hobi</a>
+                <a href="#article" class="hover:text-nature-400 transition-colors">Artikel Blog</a>
+                <a href="#interactive" class="hover:text-nature-400 transition-colors">Simulator Stat</a>
+            </div>
+
+            <a href="https://www.instagram.com/keyzapratama30?stkn=M2doM25heWNzOXg1" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white font-semibold text-xs md:text-sm px-4 py-2.5 rounded-full shadow-lg hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105">
+                <i class="fa-brands fa-instagram text-base"></i>
+                <span>@keyzapratama30</span>
+            </a>
+        </div>
+    </nav>
+
+    <header id="about" class="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 z-10">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Hero Left Intro Text -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-nature-950/80 border border-nature-500/30 text-nature-300 text-xs font-semibold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-nature-400 animate-ping"></span>
+                    Personal Blog & Digital Space
+                </div>
+                
+                <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
+                    Menggabungkan Duniamu: <br>
+                    <span class="bg-gradient-to-r from-nature-400 via-emerald-300 to-gamer-500 bg-clip-text text-transparent">
+                        Game & Perkebunan 3D
+                    </span>
+                </h1>
+
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-light">
+                    Halo! Saya <strong class="text-white font-semibold">M. Keyza Pratama</strong>. Bagi saya, berkebun dan bermain game bukanlah dua hal yang bertolak belakang. Keduanya adalah dua sisi dari kehidupan yang saling menyeimbangkan ketenangan jiwa dan ketajaman pikiran.
+                </p>
+
+                <div class="pt-2 flex flex-wrap items-center gap-4">
+                    <a href="#article" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-nature-600 to-nature-500 hover:from-nature-500 hover:to-nature-400 text-white font-bold text-sm shadow-lg shadow-nature-600/30 hover:shadow-nature-500/50 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> Baca Blog Lengkap
+                    </a>
+                    <a href="https://www.instagram.com/keyzapratama30?stkn=M2doM25heWNzOXg1" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 rounded-xl glass-card text-slate-200 hover:text-white font-semibold text-sm hover:border-nature-400/50 transition-all flex items-center gap-2">
+                        <i class="fa-brands fa-instagram text-pink-400 text-lg"></i> Follow Instagram
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Right 3D Interactive Profile Avatar Card -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="tilt-card glass-card p-6 md:p-8 rounded-3xl shadow-3d-card relative w-full max-w-md border border-nature-500/20">
+                    
+                    <!-- Decorative Badge -->
+                    <div class="absolute -top-4 -right-4 bg-gradient-to-r from-amber-500 to-emerald-500 text-slate-950 font-extrabold text-xs px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-layer-group"></i> Dual Lifestyle
+                    </div>
+
+                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 group">
+                        <!-- Dual Theme Visual Header -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-nature-900 via-slate-900 to-purple-950 flex items-center justify-between p-6">
+                            <!-- Left: Nature Icon Visual -->
+                            <div class="text-center space-y-2">
+                                <div class="w-16 h-16 rounded-2xl bg-nature-800/80 border border-nature-400/40 flex items-center justify-center text-nature-300 text-2xl shadow-inner mx-auto group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-leaf"></i>
+                                </div>
+                                <span class="text-xs font-bold text-nature-300 block">Berkebun</span>
+                            </div>
+
+                            <!-- Center Sync Icon -->
+                            <div class="w-10 h-10 rounded-full bg-slate-800/80 border border-slate-600 flex items-center justify-center text-amber-400 text-sm">
+                                <i class="fa-solid fa-bolt animate-pulse"></i>
+                            </div>
+
+                            <!-- Right: Gaming Icon Visual -->
+                            <div class="text-center space-y-2">
+                                <div class="w-16 h-16 rounded-2xl bg-purple-900/80 border border-purple-400/40 flex items-center justify-center text-purple-300 text-2xl shadow-inner mx-auto group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-gamepad"></i>
+                                </div>
+                                <span class="text-xs font-bold text-purple-300 block">Main Game</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Bottom Overlay -->
+                        <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-slate-950 to-transparent text-center">
+                            <span class="text-xs font-mono text-emerald-400">@keyzapratama30</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-bold text-xl text-white">M. Keyza Pratama</h3>
+                            <span class="text-xs bg-nature-500/20 text-nature-300 border border-nature-500/30 px-2.5 py-1 rounded-md">
+                                Verified Gamer
+                            </span>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Pencinta tanaman hias & sayuran segar yang juga aktif menaklukkan berbagai mode game kompetitif di malam hari.
+                        </p>
+                    </div>
+
+                    <!-- Mini Stat Badges -->
+                    <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-slate-800">
+                        <div class="bg-nature-950/50 p-2.5 rounded-xl border border-nature-500/20 text-center">
+                            <span class="text-xs text-slate-400 block">Status Kebun</span>
+                            <span class="text-sm font-bold text-nature-400"><i class="fa-solid fa-seedling mr-1"></i> Asri & Sejuk</span>
+                        </div>
+                        <div class="bg-purple-950/50 p-2.5 rounded-xl border border-purple-500/20 text-center">
+                            <span class="text-xs text-slate-400 block">Status Game</span>
+                            <span class="text-sm font-bold text-purple-400"><i class="fa-solid fa-brain mr-1"></i> Focus Mode</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <section id="synergy" class="py-16 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                <h2 class="text-xs font-bold text-nature-400 uppercase tracking-widest">Filosofi Hobi</h2>
+                <p class="font-display text-3xl sm:text-4xl font-extrabold text-white">
+                    Dua Hobi, Satu Keseimbangan Sempurna
+                </p>
+                <p class="text-slate-400 text-sm">
+                    Alasan utama mengapa berkebun dan bermain game menjadi kombinasi terbaik untuk waktu luang saya.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Gardening Benefits -->
+                <div class="tilt-card glass-card p-8 rounded-3xl relative overflow-hidden group hover:border-nature-500/50 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-nature-600 to-emerald-800 flex items-center justify-center text-2xl text-white shadow-lg mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-spa"></i>
+                    </div>
+                    <span class="text-xs font-mono text-nature-400 uppercase tracking-wider block mb-1">Pilar Kesehatan Mental & Fisik</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-4">Hobi Berkebun</h3>
+                    
+                    <ul class="space-y-3 text-slate-300 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-nature-400 mt-1"></i>
+                            <span><strong>Pikiran Tenang & Bebas Stres:</strong> Menyentuh tanah dan menyiram tanaman secara alami mengurangi beban pikiran.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-nature-400 mt-1"></i>
+                            <span><strong>Kesabaran & Kedisiplinan:</strong> Melatih rasa tanggung jawab merawat makhluk hidup setiap hari.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-nature-400 mt-1"></i>
+                            <span><strong>Lingkungan Asri & Hasil Panen:</strong> Rumah menjadi sejuk, indah, dan memberikan hasil yang bisa dinikmati.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Gaming Benefits -->
+                <div class="tilt-card glass-card p-8 rounded-3xl relative overflow-hidden group hover:border-purple-500/50 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center text-2xl text-white shadow-lg mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <span class="text-xs font-mono text-purple-400 uppercase tracking-wider block mb-1">Pilar Asah Otak & Refleks</span>
+                    <h3 class="font-display text-2xl font-bold text-white mb-4">Hobi Main Game</h3>
+                    
+                    <ul class="space-y-3 text-slate-300 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-purple-400 mt-1"></i>
+                            <span><strong>Fokus & Strategi Tajam:</strong> Melatih kemampuan berpikir cepat, analisis, dan penyelesaian masalah.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-purple-400 mt-1"></i>
+                            <span><strong>Kerja Sama Tim (Teamwork):</strong> Mengasah komunikasi dan kolaborasi efektif saat bermain mode multiplayer.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-purple-400 mt-1"></i>
+                            <span><strong>Sarana Refreshing:</strong> Hiburan yang seru dan menantang untuk melepas lelah setelah seharian beraktivitas.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="interactive" class="py-16 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto glass-card rounded-3xl p-8 md:p-12 border border-nature-500/30 shadow-3d-hover">
+            <div class="text-center space-y-2 mb-8">
+                <span class="text-xs font-mono text-amber-400 uppercase tracking-widest">Interactive Feature</span>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">3D Hobby Synergy Simulator</h2>
+                <p class="text-slate-400 text-sm">Geser slider di bawah untuk melihat bagaimana kombinasi jam berkebun dan main game memengaruhi kondisi harianmu!</p>
+            </div>
+
+            <!-- Interactive Slider Controls -->
+            <div class="space-y-8 max-w-xl mx-auto">
+                <div>
+                    <div class="flex justify-between text-sm font-semibold mb-2">
+                        <span class="text-nature-400"><i class="fa-solid fa-seedling"></i> Waktu Berkebun</span>
+                        <span id="garden-hours-text" class="text-white font-mono">2 Jam</span>
+                    </div>
+                    <input type="range" id="garden-range" min="0" max="6" value="2" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-sm font-semibold mb-2">
+                        <span class="text-purple-400"><i class="fa-solid fa-gamepad"></i> Waktu Main Game</span>
+                        <span id="game-hours-text" class="text-white font-mono">2 Jam</span>
+                    </div>
+                    <input type="range" id="game-range" min="0" max="6" value="2" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <!-- Simulated Stats Gauge Display -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                    <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block mb-1">Ketenangan Mental</span>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-2">
+                            <div id="bar-calm" class="bg-nature-400 h-full transition-all duration-300" style="width: 70%;"></div>
+                        </div>
+                        <span id="text-calm" class="text-sm font-bold text-nature-300">70%</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block mb-1">Fokus & Ketajaman</span>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-2">
+                            <div id="bar-focus" class="bg-purple-400 h-full transition-all duration-300" style="width: 70%;"></div>
+                        </div>
+                        <span id="text-focus" class="text-sm font-bold text-purple-300">70%</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block mb-1">Produktivitas Luang</span>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-2">
+                            <div id="bar-synergy" class="bg-amber-400 h-full transition-all duration-300" style="width: 85%;"></div>
+                        </div>
+                        <span id="text-synergy" class="text-sm font-bold text-amber-300">Sempurna</span>
+                    </div>
+                </div>
+
+                <div id="status-message" class="text-center p-3 rounded-xl bg-nature-950/60 border border-nature-500/20 text-xs text-nature-300 font-medium">
+                    "Kombinasi ideal! Otak fresh untuk gaming, pikiran rileks berkat tanaman."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <article id="article" class="py-16 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto glass-card rounded-3xl p-8 sm:p-12 md:p-16 border border-nature-500/20">
+            
+            <!-- Article Header -->
+            <header class="space-y-4 pb-8 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-nature-500/20 text-nature-300 border border-nature-500/30 rounded-full text-xs font-semibold">
+                        Kisah & Refleksi Hobi
+                    </span>
+                    <span class="text-xs text-slate-400 font-mono">Diposting oleh M. Keyza Pratama</span>
+                </div>
+                <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                    Mengapa Berkebun dan Main Game Adalah Dua Hobi yang Saling Melengkapi
+                </h1>
+<!-- ... existing code -->
+            <div class="py-8 space-y-8 text-slate-300 text-base leading-relaxed">
+                
+                <p>
+                    Setiap orang punya cara tersendiri untuk menikmati waktu luangnya. Bagi saya, <strong class="text-white">M. Keyza Pratama</strong>, kombinasi antara merawat tanaman di kebun dan menaklukkan tantangan di dalam game adalah cara terbaik untuk menjaga kualitas hidup tetap seimbang. Alasan utama saya menyukai kedua hobi ini adalah karena <span class="text-nature-300 font-semibold underline decoration-nature-500">keduanya saling melengkapi satu sama lain</span>.
+                </p>
+
+                <!-- Section 1: Gardening Detail -->
+<!-- ... existing code -->
+            <!-- Article Footer / Author Bio Box -->
+            <footer class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-nature-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                        MK
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">M. Keyza Pratama</h4>
+                        <p class="text-xs text-slate-400">Gamer & Urban Gardener</p>
+                    </div>
+                </div>
+
+                <a href="https://www.instagram.com/keyzapratama30?stkn=M2doM25heWNzOXg1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium text-xs px-5 py-3 rounded-xl transition-all shadow-md">
+                    <i class="fa-brands fa-instagram text-base"></i>
+                    <span>Ikuti Instagram @keyzapratama30</span>
+                </a>
+            </footer>
+
+        </div>
+    </article>
+
+    <footer class="py-12 border-t border-slate-800/80 text-center text-xs text-slate-500 relative z-10">
+        <div class="max-w-6xl mx-auto px-6 space-y-4">
+            <div class="flex items-center justify-center gap-2 text-nature-400 font-display font-semibold">
+                <i class="fa-solid fa-leaf"></i> M. Keyza Pratama Personal Blog
+            </div>
+            <p>© 2026 M. Keyza Pratama. Dikembangkan dengan tema 3D Perkebunan & Gaming Aesthetic.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Interactive Leaf Particle Generator
+        function createLeafParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf-particle';
+                leaf.innerHTML = `<i class="fa-solid fa-leaf text-nature-500" style="font-size: ${Math.random() * 14 + 10}px;"></i>`;
+                
+                leaf.style.left = `${Math.random() * 100}%`;
+                leaf.style.bottom = `-50px`;
+                leaf.style.animationDelay = `${Math.random() * 10}s`;
+                leaf.style.animationDuration = `${Math.random() * 6 + 8}s`;
+                
+                container.appendChild(leaf);
+            }
+        }
+
+        // 2. 3D Tilt Card Interaction
+        function init3DTiltCards() {
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -10;
+                    const rotateY = ((x - centerX) / centerX) * 10;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+
+        // 3. Interactive Hobby Synergy Simulator Logic
+        function initSynergySimulator() {
+            const gardenRange = document.getElementById('garden-range');
+            const gameRange = document.getElementById('game-range');
+            
+            const gardenText = document.getElementById('garden-hours-text');
+            const gameText = document.getElementById('game-hours-text');
+            
+            const barCalm = document.getElementById('bar-calm');
+            const barFocus = document.getElementById('bar-focus');
+            const barSynergy = document.getElementById('bar-synergy');
+            
+            const textCalm = document.getElementById('text-calm');
+            const textFocus = document.getElementById('text-focus');
+            const textSynergy = document.getElementById('text-synergy');
+            const statusMessage = document.getElementById('status-message');
+
+            function updateStats() {
+                const gardenHours = parseInt(gardenRange.value);
+                const gameHours = parseInt(gameRange.value);
+
+                gardenText.textContent = `${gardenHours} Jam`;
+                gameText.textContent = `${gameHours} Jam`;
+
+                // Calculate Calmness based on gardening hours
+                const calmVal = Math.min(100, gardenHours * 20 + 20);
+                // Calculate Focus based on gaming hours
+                const focusVal = Math.min(100, gameHours * 20 + 20);
+                
+                // Calculate Synergy
+                const totalHours = gardenHours + gameHours;
+                let synergyVal = 0;
+                let msg = "";
+
+                if (gardenHours === 0 && gameHours === 0) {
+                    synergyVal = 10;
+                    msg = "Belum ada hobi yang dijalankan hari ini. Coba luangkan waktu!";
+                } else if (gardenHours > 4 && gameHours === 0) {
+                    synergyVal = 65;
+                    msg = "Tubuh sangat rileks dan tenang, namun otak butuh tantangan game seru!";
+                } else if (gameHours > 4 && gardenHours === 0) {
+                    synergyVal = 60;
+                    msg = "Fokus tinggi, tapi mata lelah menatap layar. Waktunya melihat tanaman hijau!";
+                } else if (Math.abs(gardenHours - gameHours) <= 1 && totalHours >= 2) {
+                    synergyVal = 95;
+                    msg = "Keseimbangan Sempurna! Tubuh segar, pikiran tenang, dan ketajaman otak terasah pesat.";
+                } else {
+                    synergyVal = 80;
+                    msg = "Kombinasi hobi yang baik untuk menjaga stamina fisik dan kecerdasan mental.";
+                }
+
+                // Update UI elements
+                barCalm.style.width = `${calmVal}%`;
+                textCalm.textContent = `${calmVal}%`;
+
+                barFocus.style.width = `${focusVal}%`;
+                textFocus.textContent = `${focusVal}%`;
+
+                barSynergy.style.width = `${synergyVal}%`;
+                textSynergy.textContent = synergyVal > 85 ? "Sempurna" : synergyVal > 60 ? "Baik" : "Cukup";
+                
+                statusMessage.textContent = `"${msg}"`;
+            }
+
+            gardenRange.addEventListener('input', updateStats);
+            gameRange.addEventListener('input', updateStats);
+            updateStats();
+        }
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            createLeafParticles();
+            init3DTiltCards();
+            initSynergySimulator();
+        });
+    </script>
+</body>
+</html>
